@@ -1,3 +1,9 @@
+SPOTIPY_CLIENT_ID = 'ee4debf0b2304dda8ca485f3edede48f'
+SPOTIPY_CLIENT_SECRET = 'bbb96d6c8b8e43fbab8874cf97a477bd'
+YT_API_KEY = 'AIzaSyBcp3Bz71_BR05W9rMaXR3xsMMf04c-278'
+FFMPEG_PATH = 'C:/ffmpeg/bin/ffmpeg.exe'
+SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/callback'
+
 import os
 import yt_dlp
 import shutil
@@ -5,10 +11,6 @@ import spotipy
 from urllib.parse import urlparse
 from spotipy.oauth2 import SpotifyOAuth
 from googleapiclient.discovery import build
-
-SPOTIPY_CLIENT_ID = 'ee4debf0b2304dda8ca485f3edede48f'
-SPOTIPY_CLIENT_SECRET = 'bbb96d6c8b8e43fbab8874cf97a477bd'
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/callback'
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
     client_id=SPOTIPY_CLIENT_ID,
@@ -50,12 +52,7 @@ def get_youtube_video_link(api_key, video_name):
     
 def get_postprocessors(media_type):
     """Configure post-processing"""
-    if media_type == 'video':
-        return [{
-            'key': 'FFmpegVideoConvertor',
-            'preferedformat': 'mp4',
-        }]
-    else:  # audio
+    if media_type == 'audio':
         return [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
@@ -63,12 +60,15 @@ def get_postprocessors(media_type):
         }]
     
 def download_media(url, media_type='audio', playlist_name=None):
-    ffmpeg_path = 'C:/ffmpeg/bin/ffmpeg.exe'
+    ffmpeg_path = FFMPEG_PATH
 
-    output_dir = f"./{playlist_name}/" if playlist_name else "./downloads/"
+    output_dir = f"Playlists/{playlist_name}/" if playlist_name else "Playlists/downloads/"
     os.makedirs(output_dir, exist_ok=True)
 
     ydl_opts = {
+        'quiet': True,
+        'verbose': False,
+        'no-warnings': True,
         'ffmpeg_location': ffmpeg_path,
         'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
         'format': 'bestaudio/best' if media_type == 'audio' else 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
@@ -106,7 +106,7 @@ def download_playlist(playlist_url):
     playlist_info = sp.playlist(playlist_id)
     playlist_name = playlist_info['name']
 
-    api_key = 'AIzaSyBcp3Bz71_BR05W9rMaXR3xsMMf04c-278'
+    api_key = YT_API_KEY
     
     print(f"Playlist Name: {playlist_name}")
     print(f"Found {len(tracks)} tracks in the playlist:")
@@ -116,6 +116,22 @@ def download_playlist(playlist_url):
         print(f"{i+1}. {song}")
         download_media(get_youtube_video_link(api_key, song),'audio', playlist_name)
 
+def main():
+    playlist_url = input("Enter Spotify playlist URL: ")
+    if not playlist_url.startswith("https://open.spotify.com/playlist/"):
+        print("Invalid Spotify playlist URL.")
+        main()
+    else:
+        print("Downloading playlist...")
+        download_playlist(playlist_url)
+        print("Download completed.")
+        shutil.rmtree('Playlists/downloads', ignore_errors=True)
+        shutil.rmtree('Playlists', ignore_errors=True)
+        x = input("Enter r to restart or any key to exit: ")
+        if x == 'r': 
+            main()
+        else:
+            exit()
 
-playlist_url = input("Enter Spotify playlist URL: ")
-download_playlist(playlist_url)
+if __name__ == "__main__":
+    main()
