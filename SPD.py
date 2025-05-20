@@ -1,7 +1,7 @@
-SPOTIPY_CLIENT_ID = 'ee4debf0b2304dda8ca485f3edede48f'
-SPOTIPY_CLIENT_SECRET = 'bbb96d6c8b8e43fbab8874cf97a477bd'
-YT_API_KEY = 'AIzaSyBcp3Bz71_BR05W9rMaXR3xsMMf04c-278'
-FFMPEG_PATH = 'C:/ffmpeg/bin/ffmpeg.exe'
+SPOTIPY_CLIENT_ID = 'your_spotify_client_id'  # Enter your Spotify Client ID
+SPOTIPY_CLIENT_SECRET = 'your_spotify_client_secret'  # Enter your Spotify Client Secret
+YT_API_KEY = 'your_youtube_api_key'  # Enter your YouTube API Key
+FFMPEG_PATH = 'path_to_ffmpeg'  # Enter your ffmpeg path (e.g., 'C:/ffmpeg/bin/ffmpeg.exe' or '/usr/bin/ffmpeg')
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8000/callback'
 
 import os
