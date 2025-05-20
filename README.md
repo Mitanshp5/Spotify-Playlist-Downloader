@@ -48,7 +48,7 @@ sudo apt install ffmpeg
 2. **YouTube API**:
    - Go to https://console.cloud.google.com/
    - Create a new project
-   - Enable the YouTube Data API v3
+   - Enable the YouTube Data API v3 (https://console.developers.google.com/apis/api/youtube.googleapis.com/overview)
    - Create an API key
 
 ### 4. Configure the Script
